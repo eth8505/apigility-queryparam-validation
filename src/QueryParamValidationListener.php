@@ -170,11 +170,17 @@
                 /** @var string|array|null $inputFilter */
                 $inputFilter = $this->config[$controllerService]['query_filter'];
 
-                if (is_array($inputFilter) && isset($inputFilter[$resourceEventName])) {
-                    return $inputFilter[$resourceEventName];
-                }
+                if (is_array($inputFilter)) {
 
-                return $inputFilter;
+                    if (isset($inputFilter[$resourceEventName])) {
+                        return $inputFilter[$resourceEventName];
+                    } elseif (isset($inputFilter['default'])) {
+                        return $inputFilter['default'];
+                    }
+
+                } else {
+                    return $inputFilter;
+                }
 
             }
 
@@ -214,7 +220,7 @@
          * @param string $inputFilterService
          * @return InputFilterInterface
          */
-        protected function getInputFilter(string $inputFilterService): string
+        protected function getInputFilter(string $inputFilterService): InputFilterInterface
         {
 
             return $this->inputFilters[$inputFilterService];
