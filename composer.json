@@ -1,15 +1,16 @@
 {
-  "name": "eth8505/âpigility-querystring-validation",
-  "description": "query string validation for apigility",
+  "name": "eth8505/zf-rest-queryparam-validation",
+  "description": "query string validation for zf-rest",
   "keywords": [
     "zf3",
     "zend",
-    "apigility"
+    "rest",
+    "zf-rest"
   ],
   "license": "MIT",
   "authors": [
     {
-      "name": "eth8505",
+      "name": "Jan-Simon Winkelmann",
       "email": "winkelmann@blue-metallic.de"
     }
   ],
