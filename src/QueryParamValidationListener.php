@@ -40,6 +40,13 @@
         protected $sharedListeners = [];
 
         /**
+         * Cache of input filter service names/instances
+         *
+         * @var array
+         */
+        protected $inputFilters = [];
+
+        /**
          * @param array $config
          * @param ContainerInterface $inputFilterManager
          */
@@ -107,32 +114,31 @@
         public function onResourceEvent(ResourceEvent $e): ?ApiProblemResponse
         {
 
-            $routeMatch = $e->getRouteMatch();
-            if (!$routeMatch instanceof RouteMatch) {
+            $routeMatches = $e->getRouteMatch();
+            if (!$routeMatches instanceof RouteMatch) {
                 return null;
             }
 
-            $controllerService = $routeMatch->getParam('controller', false);
+            $controllerService = $routeMatches->getParam('controller', false);
             if (!$controllerService) {
                 return null;
             }
 
-            $inputFilter = $this->getInputFilter($controllerService, $e->getName());
+            $inputFilterService = $this->getInputFilterService($controllerService, $e->getName());
+            if (!$inputFilterService) {
+                return null;
+            }
 
-            if ($inputFilter === null || !$inputFilter instanceof InputFilterInterface) {
-
+            if (!$this->hasInputFilter($inputFilterService)) {
                 return new ApiProblemResponse(
                     new ApiProblem(
                         500,
-                        sprintf(
-                            'Input filter not found for controller "%s" and event "%s"',
-                            $controllerService,
-                            $e->getName()
-                        )
+                        sprintf('Listed input filter "%s" does not exist; cannot validate request', $inputFilterService)
                     )
                 );
-
             }
+
+            $inputFilter = $this->getInputFilter($inputFilterService);
 
             $inputFilter->setData($e->getQueryParams());
             if ($inputFilter->isValid()) {
@@ -152,31 +158,63 @@
         /**
          * Retrieve the query filter service name
          *
-         * If not present, return boolean false.
-         *
          * @param string $controllerService
          * @param string $resourceEventName
-         * @return InputFilterInterface|null
+         * @return string|null
          */
-        protected function getInputFilter($controllerService, $resourceEventName): ?InputFilterInterface
+        protected function getInputFilterService(string $controllerService, string $resourceEventName) : ?string
         {
 
             if (!empty($this->config[$controllerService]['query_filter'])) {
 
+                /** @var string|array|null $inputFilter */
                 $inputFilter = $this->config[$controllerService]['query_filter'];
 
                 if (is_array($inputFilter) && isset($inputFilter[$resourceEventName])) {
-                    $inputFilter = $inputFilter[$resourceEventName];
+                    return $inputFilter[$resourceEventName];
                 }
 
-                if ($this->inputFilterManager->has($inputFilter)) {
-                    return $this->inputFilterManager->get($inputFilter);
-                }
+                return $inputFilter;
 
             }
 
             return null;
 
+        }
+
+        /**
+         * Determine if we have an input filter matching the service name
+         *
+         * @param string $inputFilterService
+         * @return bool
+         */
+        protected function hasInputFilter($inputFilterService)
+        {
+            if (array_key_exists($inputFilterService, $this->inputFilters)) {
+                return true;
+            }
+            if (! $this->inputFilterManager
+                || ! $this->inputFilterManager->has($inputFilterService)
+            ) {
+                return false;
+            }
+            $inputFilter = $this->inputFilterManager->get($inputFilterService);
+            if (! $inputFilter instanceof InputFilterInterface) {
+                return false;
+            }
+            $this->inputFilters[$inputFilterService] = $inputFilter;
+            return true;
+        }
+
+        /**
+         * Retrieve the named input filter service
+         *
+         * @param string $inputFilterService
+         * @return InputFilterInterface
+         */
+        protected function getInputFilter($inputFilterService)
+        {
+            return $this->inputFilters[$inputFilterService];
         }
 
     }

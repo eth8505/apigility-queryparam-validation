@@ -4,9 +4,9 @@
      * @license MIT
      */
 
-    namespace Eth8585\ZfRestQueryParamValidation;
+    namespace Eth8505\ZfRestQueryParamValidation;
 
-    use ModuleName\QueryValidation\QueryParamValidationListener;
+    use Eth8505\ZfRestQueryParamValidation\Factory\QueryParamValidationListenerFactory;
     use Zend\EventManager\EventInterface;
     use Zend\EventManager\EventManagerInterface;
     use Zend\ModuleManager\Feature\BootstrapListenerInterface;
