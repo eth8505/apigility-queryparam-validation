@@ -1,7 +1,11 @@
 {
   "name": "eth8505/âpigility-querystring-validation",
   "description": "query string validation for apigility",
-  "keywords": ["zf3", "zend", "apigility"],
+  "keywords": [
+    "zf3",
+    "zend",
+    "apigility"
+  ],
   "license": "MIT",
   "authors": [
     {
@@ -10,12 +14,14 @@
     }
   ],
   "require": {
-    "zfcampus/zf-apigility": "^1.3.0",
-    "zfcampus/zf-content-validation": "1.3.6"
+    "php": ">=7.1",
+    "zendframework/zend-servicemanager": "^3.0",
+    "zfcampus/zf-rest": "^1.3",
+    "zendframework/zend-inputfilter": "^2.7"
   },
   "autoload": {
     "psr-4": {
-      "Eth8585\\ApigilityQueryStringValidation\\": "src/"
+      "Eth8585\\ZfRestQueryParamValidation\\": "src/"
     }
   }
 }

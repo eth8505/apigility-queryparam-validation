@@ -1,35 +1,56 @@
 <?php
-    
-namespace Eth8585\ApigilityQueryStringValidation;
+    /**
+     * @copyright 2017 Jan-Simon Winkelmann <winkelmann@blue-metallic.de>
+     * @license MIT
+     */
 
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\Mvc\Application;
-use Zend\ServiceManager\ServiceLocatorInterface;
+    namespace Eth8585\ZfRestQueryParamValidation;
 
-/**
- * @author Jan-Simon Winkelmann <winkelmann@blue-metallic.de>
- */
-class Module implements BootstrapListenerInterface {
+    use ModuleName\QueryValidation\QueryParamValidationListener;
+    use Zend\EventManager\EventInterface;
+    use Zend\EventManager\EventManagerInterface;
+    use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+    use Zend\ModuleManager\Feature\ServiceProviderInterface;
+    use Zend\Mvc\Application;
+    use Zend\ServiceManager\ServiceLocatorInterface;
 
     /**
-     * @inheritdoc
+     * Module class
      */
-    public function onBootstrap(EventInterface $e)
+    class Module implements BootstrapListenerInterface, ServiceProviderInterface
     {
-        /** @var Application $app */
-        $app = $e->getTarget();
 
-        /** @var ServiceLocatorInterface $services */
-        $services = $app->getServiceManager();
+        /**
+         * @inheritdoc
+         */
+        public function onBootstrap(EventInterface $e)
+        {
 
-        /** @var EventManagerInterface $events */
-        $events = $app->getEventManager();
+            /** @var Application $app */
+            $app = $e->getTarget();
 
-        $sharedEvents = $events->getSharedManager();
+            /** @var ServiceLocatorInterface $services */
+            $services = $app->getServiceManager();
 
-        $services->get(QueryValidationListener::class)->attachShared($sharedEvents);
+            /** @var EventManagerInterface $events */
+            $events = $app->getEventManager();
+
+            $services->get(QueryParamValidationListener::class)->attachShared($events->getSharedManager());
+
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getServiceConfig()
+        {
+
+            return [
+                'factories' => [
+                    QueryParamValidationListener::class => QueryParamValidationListenerFactory::class
+                ]
+            ];
+
+        }
+
     }
-
-}
