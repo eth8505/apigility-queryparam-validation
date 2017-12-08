@@ -162,7 +162,7 @@
          * @param string $resourceEventName
          * @return string|null
          */
-        protected function getInputFilterService(string $controllerService, string $resourceEventName) : ?string
+        protected function getInputFilterService(string $controllerService, string $resourceEventName): ?string
         {
 
             if (!empty($this->config[$controllerService]['query_filter'])) {
@@ -188,21 +188,23 @@
          * @param string $inputFilterService
          * @return bool
          */
-        protected function hasInputFilter($inputFilterService)
+        protected function hasInputFilter(string $inputFilterService): bool
         {
+
             if (array_key_exists($inputFilterService, $this->inputFilters)) {
                 return true;
             }
-            if (! $this->inputFilterManager
-                || ! $this->inputFilterManager->has($inputFilterService)
+            if (!$this->inputFilterManager
+                || !$this->inputFilterManager->has($inputFilterService)
             ) {
                 return false;
             }
             $inputFilter = $this->inputFilterManager->get($inputFilterService);
-            if (! $inputFilter instanceof InputFilterInterface) {
+            if (!$inputFilter instanceof InputFilterInterface) {
                 return false;
             }
             $this->inputFilters[$inputFilterService] = $inputFilter;
+
             return true;
         }
 
@@ -212,8 +214,9 @@
          * @param string $inputFilterService
          * @return InputFilterInterface
          */
-        protected function getInputFilter($inputFilterService)
+        protected function getInputFilter(string $inputFilterService): string
         {
+
             return $this->inputFilters[$inputFilterService];
         }
 
