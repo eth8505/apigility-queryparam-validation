@@ -1,3 +1,5 @@
+!! THIS REPOSITORY IS NO LONGER MAINTAINED, PLEASE USE [eth8505/laminas-api-tools-rest-queryparam-validation](https://github.com/eth8505/laminas-api-tools-rest-queryparam-validation) INSTEAD !!
+
 # Eth8505\ZfRestQueryParamValidation - ZF3 Module for zf-rest QueryString validation
 The **Eth8505\ZfRestQueryParamValidation** module allows you to validate query parameters with
 [zfcampus/zf-rest](https://github.com/zfcampus/zf-rest) just like you would with 
